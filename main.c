@@ -1,36 +1,45 @@
-#include <kipr/botball.h>
-#define CLAW_CLOSE 1650	// sets number used for closing the claw, that way we know what it is.
-#define CLAW_OPEN 881	// sets number used for opening the claw, that way we know what it is.
-#define ARM_UP 133	// sets number used for raising the arm, that way we know what it is.
-#define ARM_DOWN 1279	// sets number used for lowering the arm, that way we know what it is.
-#define ARM_PORT 1	//defines the port used by the servo for the arm, use this to control that servo
-	//if we need to change the number we only need to change it here
-#define CLAW_PORT 0		// same as the define for the arm's port, just for the claw
-#define LEFT_MOTOR 0	//Defines port for left motor works the same as the defines for servo ports
-#define RIGHT_MOTOR 2	//defines the port for the right motor
+#include <kipr/botball.h> 
+#define LEFT_MOTOR_PORT 2
+//Defines port for left motor works the same as the defines for servo ports
+#define RIGHT_MOTOR_PORT 0
+//defines the port for the right motor
+#define FORWARD_SPEED 20
+//set forward speed for wheels makes motion consistent
+#define TURN_SPEED 5
+//set the speed for the wheel on side that we are turning towards
+#define SLOW_SPEED 10
+//set speed for slowing down
+#define BACKWARD_SPEED -20
+//set the speed for backward motion for, consistency?
 
-int main()
-{
+void drive(int left, int right);
+void slow_servo(int port, int target);
+
+int main(){
+    //wait_for_light(3); //starts robot when light is on
+    shut_down_in(119); //shuts down in 2 minutes
     enable_servos();
-    set_servo_position(ARM_PORT,ARM_UP);
-    msleep(1000);
-    set_servo_position(CLAW_PORT,CLAW_OPEN);
-    motor(LEFT_MOTOR,50);
-    motor(RIGHT_MOTOR,50);
-    msleep(1000);
-    msleep(100);
-    set_servo_position(ARM_PORT,ARM_DOWN);
-    msleep(1000);
-    set_servo_position(CLAW_PORT,CLAW_CLOSE);
-    msleep(1000);
-    set_servo_position(ARM_PORT,ARM_UP);
-    msleep(1000);
-    motor(LEFT_MOTOR,-10);
-    motor(RIGHT_MOTOR, 10);
-    msleep(10000);
-    motor(LEFT_MOTOR,50);
-    motor(RIGHT_MOTOR,50);
-    msleep(1000);
-    set_servo_position(CLAW_PORT,CLAW_OPEN);
+    camera_open();
+    camera_update(); //takes pictures
+    int pokeBlocks = 0;
+
+        
+    drive(FORWARD_SPEED, FORWARD_SPEED);
+    msleep(27000);
+    drive(0,SLOW_SPEED);
+    msleep(11000);
+    drive(0,0);
+	pokeBlocks = 1;
+     
+    
+    while(pokeBlocks){
+        motor(1,500);
+    }
     return 0;
+}
+
+void drive(int left, int right){
+
+    motor(LEFT_MOTOR_PORT, left);
+    motor(RIGHT_MOTOR_PORT, right);
 }
